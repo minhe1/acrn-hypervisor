@@ -159,7 +159,7 @@ int32_t vmexit_handler(struct acrn_vcpu *vcpu)
 	int32_t ret;
 
 	if (get_cpu_id() != vcpu->pcpu_id) {
-		pr_fatal("vcpu is not running on its pcpu!");
+		pr_fatal("vcpu %d is not running on its pcpu!", vcpu->pcpu_id);
 		return -EINVAL;
 	}
 

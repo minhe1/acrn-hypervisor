@@ -718,6 +718,7 @@ reconfig:
 static void profiling_start_pmu(void)
 {
 	uint16_t i;
+	uint64_t pcpu_mask = 0UL;
 
 	dev_dbg(ACRN_DBG_PROFILING, "%s: entering", __func__);
 
@@ -744,9 +745,10 @@ static void profiling_start_pmu(void)
 		per_cpu(profiling_info.sep_state, i).frozen_delayed = 0U;
 		per_cpu(profiling_info.sep_state, i).nofrozen_pmi = 0U;
 		per_cpu(profiling_info.sep_state, i).pmu_state = PMU_RUNNING;
+		bitmap_set_nolock(i, &pcpu_mask);
 	}
 
-	smp_call_function(pcpu_active_bitmap, profiling_ipi_handler, NULL);
+	smp_call_function(pcpu_mask, profiling_ipi_handler, NULL);
 
 	in_pmu_profiling = true;
 
@@ -759,6 +761,7 @@ static void profiling_start_pmu(void)
 static void profiling_stop_pmu(void)
 {
 	uint16_t i;
+	uint64_t pcpu_mask = 0UL;
 
 	dev_dbg(ACRN_DBG_PROFILING, "%s: entering", __func__);
 
@@ -794,9 +797,10 @@ static void profiling_stop_pmu(void)
 			per_cpu(profiling_info.sep_state, i).frozen_well = 0U;
 			per_cpu(profiling_info.sep_state, i).frozen_delayed = 0U;
 			per_cpu(profiling_info.sep_state, i).nofrozen_pmi = 0U;
+			bitmap_set_nolock(i, &pcpu_mask);
 		}
 
-		smp_call_function(pcpu_active_bitmap, profiling_ipi_handler, NULL);
+		smp_call_function(pcpu_mask, profiling_ipi_handler, NULL);
 
 		in_pmu_profiling = false;
 
