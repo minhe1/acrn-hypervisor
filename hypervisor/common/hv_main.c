@@ -68,6 +68,11 @@ void vcpu_thread(struct acrn_vcpu *vcpu)
 			continue;
 		}
 
+		if (get_cpu_id() != vcpu->pcpu_id) {
+			msr_write(MSR_IA32_TSC_AUX, (uint64_t) vcpu->pcpu_id);
+		}
+
+
 		vcpu->arch.nrexits++;
 
 		profiling_pre_vmexit_handler(vcpu);
