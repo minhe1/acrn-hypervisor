@@ -1419,4 +1419,13 @@ void profiling_setup(void)
 	dev_dbg(ACRN_DBG_PROFILING, "%s: exiting", __func__);
 }
 
+#else
+
+#include <hypervisor.h>
+
+void profiling_vmenter_handler(__unused struct acrn_vcpu *vcpu) {}
+void profiling_pre_vmexit_handler(__unused struct acrn_vcpu *vcpu) {}
+void profiling_post_vmexit_handler(__unused struct acrn_vcpu *vcpu) {}
+void profiling_setup(void) {}
+
 #endif
