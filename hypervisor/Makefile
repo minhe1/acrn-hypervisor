@@ -32,7 +32,7 @@ ARCH_ASFLAGS :=
 ARCH_ARFLAGS :=
 ARCH_LDFLAGS :=
 
-PROFILING ?= 1
+PROFILING ?= 0
 
 .PHONY: default
 default: all
