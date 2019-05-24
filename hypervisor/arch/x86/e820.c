@@ -69,6 +69,16 @@ void rebuild_vm0_e820(void)
 		entry_start = entry->baseaddr;
 		entry_end = entry->baseaddr + entry->length;
 
+		pr_info("mmap table: %d type: 0x%x", i, entry->type);
+		pr_info("Base: 0x%016llx end: 0x%016llx",
+				entry_start, entry_end);
+		if (entry_end > 0x180000000ULL) {
+			entry->length = 0x180000000ULL - entry->baseaddr;
+			entry_end = 0x180000000ULL;
+			pr_info("Base updated: 0x%016llx end: 0x%016llx",
+					entry_start, entry_end);
+		}
+
 		/* No need handle in these cases*/
 		if ((entry->type != E820_TYPE_RAM) || (entry_end <= hv_start_pa) || (entry_start >= hv_end_pa)) {
 			continue;
